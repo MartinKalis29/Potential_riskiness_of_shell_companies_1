@@ -4,7 +4,7 @@
 <h1>List of companies</h1>
 <ul>
     {% for company in companies %}
-        <li>{{ company }}</li>
+        <li><a href="{% url 'company' company.id %}"> {{ company }}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}
