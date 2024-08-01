@@ -1,18 +1,22 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, Http404, JsonResponse
+from django.shortcuts import render, get_object_or_404
 
 from viewer.models import Company
+
+from .google_sheets import get_google_sheets_data
 
 
 # Create your views here.
 def companies(request):
-    result = Company.objects.all()
-    context = {'companies': result}
-    return render(
-        request,
-        'database.html',
-        context
-    )
+    # Zadá sa názov alebo URL Google Sheets
+    sheet_name = "Database_companies"
+    data = get_google_sheets_data(sheet_name)
+
+    # Spracovanie dát a ich odoslanie do šablóny alebo ako odpoveď
+    context = {
+        'companies': data
+    }
+    return render(request, 'companies.html', context)
 
 
 def home(request):
@@ -27,9 +31,46 @@ def statistics(request):
     return render(request, 'statistics.html', {'title': 'Statistics'})
 
 
-def company(request, pk):
-    if Company.objects.filter(id=pk).exists():
-        result = Company.objects.get(id=pk)
-        return render(request, 'company.html', {'title': result.name, 'company': result})
-    result = Company.objects.all().order_by('name')
-    return render(request, 'database.html', {'title': 'Database', 'database': result})
+# def company(request, pk):
+#     if Company.objects.filter(id=pk).exists():
+#         result = Company.objects.get(id=pk)
+#         return render(request, 'company.html', {'title': result.name, 'company': result})
+#     result = Company.objects.all().order_by('name')
+#     return render(request, 'database.html', {'title': 'Database', 'database': result})
+
+
+def company_detail(request, company_id):
+    sheet_name = "Database_companies"
+    data = get_google_sheets_data(sheet_name)
+
+    # Vyhľadanie konkrétnej firmy
+    try:
+        company_id = int(company_id)
+    except ValueError:
+        raise Http404("Invalid company ID")
+
+    company = next((company for company in data if company.get('company_id') == company_id), None)
+    if not company:
+        raise Http404("Company does not exist")
+
+    # Výpočet rizikového skóre
+    risk_score = 0
+    risky_addresses = ["Račianska 88 B", "Tallerova 4", "Zámocká 3", "Košická 52/A"]
+
+    if company.get('registered_office') in risky_addresses and company.get('registered_office_city') == "Bratislava":
+        risk_score += 1
+    if company.get('executive_change_count', 0) > 1:
+        risk_score += 1
+    if company.get('employee_count', 0) == 0 or company.get('employee_count', 0) == 1:
+        risk_score += 1
+    if company.get('YoY_increase_in_sales', 0) > 99999:
+        risk_score += 1
+    if company.get('tax_office_debt', 0) > 0:
+        risk_score += 1
+    if company.get('social_insurance_agency_debt', 0) > 0:
+        risk_score += 1
+    if company.get('health_insurance_company_debt', 0) > 0:
+        risk_score += 1
+
+    return render(request, 'company.html', {'company': company, 'risk_score': risk_score})
+

@@ -15,7 +15,7 @@
                 <th>Registered Office City</th>
                 <th>Executive Name</th>
                 <th>Employee Count</th>
-                <th>Revenue Year</th>
+                <th>YoY Sales</th>
                 <th>Tax Office Debt</th>
                 <th>Social Insurance Debt</th>
                 <th>Health Insurance Debt</th>
@@ -31,10 +31,10 @@
                 <td>{{ company.registered_office_city }}</td>
                 <td>{{ company.executive_name }}</td>
                 <td>{{ company.employee_count }}</td>
-                <td>{{ company.revenue_year }}</td>
+                <td>{{ company.YoY_increase_in_sales }}</td>
                 <td>{{ company.tax_office_debt }}</td>
-                <td>{{ company.social_insurance_debt }}</td>
-                <td>{{ company.health_insurance_debt }}</td>
+                <td>{{ company.social_insurance_agency_debt }}</td>
+                <td>{{ company.health_insurance_company_debt }}</td>
             </tr>
             {% endfor %}
         </tbody>
