@@ -6,7 +6,7 @@ from viewer.models import Company
 def get_google_sheets_data(sheet_name):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name(
-        'C:\\Users\\Jozef Repka\\PycharmProjects\\Potential_riskiness_of_shell_companies_1\\arctic-carving-430707-s6-52ee32effc40.json',
+        r'C:\Users\hp\PycharmProjects\Potential_riskiness_of_shell_companies_1\arctic-carving-430707-s6-52ee32effc40.json',
         scope
     )
 
@@ -23,7 +23,7 @@ def update_companies_from_sheet(sheet_name):
 
     for item in data:
         Company.objects.update_or_create(
-            name=item.get('name'),
+            name=item.get('company_name'),
             defaults={
                 'date_of_foundation': item.get('date_of_foundation'),
                 'registered_office': item.get('registered_office'),
