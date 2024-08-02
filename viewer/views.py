@@ -16,7 +16,7 @@ def companies(request):
     context = {
         'companies': data
     }
-    return render(request, 'companies.html', context)
+    return render(request, 'database.html', context)  # upravená cesta k šablóne
 
 
 def home(request):
@@ -29,14 +29,6 @@ def about_us(request):
 
 def statistics(request):
     return render(request, 'statistics.html', {'title': 'Statistics'})
-
-
-# def company(request, pk):
-#     if Company.objects.filter(id=pk).exists():
-#         result = Company.objects.get(id=pk)
-#         return render(request, 'company.html', {'title': result.name, 'company': result})
-#     result = Company.objects.all().order_by('name')
-#     return render(request, 'database.html', {'title': 'Database', 'database': result})
 
 
 def company_detail(request, company_id):
@@ -72,5 +64,4 @@ def company_detail(request, company_id):
     if company.get('health_insurance_company_debt', 0) > 0:
         risk_score += 1
 
-    return render(request, 'company.html', {'company': company, 'risk_score': risk_score})
-
+    return render(request, 'company_detail.html', {'company': company, 'risk_score': risk_score})  # upravená cesta k šablóne

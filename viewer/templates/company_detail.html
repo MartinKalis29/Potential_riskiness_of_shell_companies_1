@@ -3,6 +3,23 @@
 {% block content %}
     <div class="container">
         <h1>{{ company.company_name }}</h1>
+
+        <!-- Risk Score and Warning -->
+        <div class="alert alert-dismissible fade show" role="alert">
+            {% if risk_score <= 2 %}
+                <h4 class="alert-heading text-success">Risk Score: {{ risk_score }}</h4>
+            {% elif risk_score <= 4 %}
+                <h4 class="alert-heading text-warning">Risk Score: {{ risk_score }}</h4>
+            {% else %}
+                <h4 class="alert-heading text-danger">Risk Score: {{ risk_score }}</h4>
+                <p class="font-weight-bold">Warning: This company has a high-risk score. Exercise caution in any dealings.</p>
+            {% endif %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <!-- Company Details Table -->
         <table class="table table-bordered table-striped">
             <tbody>
                 <tr>
@@ -71,14 +88,5 @@
                 </tr>
             </tbody>
         </table>
-
-        {% if risk_score <= 2 %}
-            <h2 class="text-success">Risk Score: {{ risk_score }}</h2>
-        {% elif risk_score <= 4 %}
-            <h2 class="text-warning">Risk Score: {{ risk_score }}</h2>
-        {% else %}
-            <h2 class="text-danger">Risk Score: {{ risk_score }}</h2>
-            <p class="font-weight-bold">Warning: This company has a high-risk score. Exercise caution in any dealings.</p>
-        {% endif %}
     </div>
 {% endblock %}
