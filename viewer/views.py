@@ -65,3 +65,12 @@ def company_detail(request, company_id):
         risk_score += 1
 
     return render(request, 'company_detail.html', {'company': company, 'risk_score': risk_score})  # upravená cesta k šablóne
+
+
+def search(request):
+    if request.method == "POST":
+        q = request.POST.get("search")
+        database_ = Company.objects.filter(company_name__icontains=q)
+        context = {'search_input': q, 'database': database_}
+        return render(request, "search_results.html", context)
+    return render(request, "home.html")

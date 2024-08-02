@@ -3,7 +3,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import path, include
 
 from accounts.views import SubmittableLoginView, SubmittablePasswordChangeView, SignUpView
-from viewer.views import companies, home, about_us, statistics, company_detail
+from viewer.views import companies, home, about_us, statistics, company_detail, search
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,4 +18,6 @@ urlpatterns = [
     path('accounts/signup/', SignUpView.as_view(), name='signup'),
     path('accounts/password_change/', SubmittablePasswordChangeView.as_view(), name='password_change'),
     path('accounts/', include('django.contrib.auth.urls')),
+
+    path('search/', search, name='search'),
 ]

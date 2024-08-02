@@ -11,6 +11,12 @@
                 <a class="nav-item nav-link" href="{% url 'about_us' %}">About us</a>
             </div>
 
+            <form method="POST" action="{% url 'search' %}">
+                {% csrf_token %}
+                <input type="text" name="search" placeholder="Search for a company...">
+                <button type="submit">Search</button>
+            </form>
+
             <div class="navbar-nav ml-auto">
                 <div class="nav-item dropdown">
                     {% if user.is_authenticated %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Search: '{{ search_input }}'</h1>
+    <h2>Company name</h2>
+        <ul>
+            {% for company in database %}
+                <li><a href="{% url 'company_detail' company.company_id %}">{{ company.company_name }}</a></li>
+            {% empty %}
+                No result
+            {% endfor %}
+        </ul>
+{% endblock %}
