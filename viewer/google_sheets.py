@@ -12,9 +12,9 @@ def get_google_sheets_data(sheet_name):
     """
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name(
-        r'C:\Users\Jozef Repka\PycharmProjects\Potential_riskiness_of_shell_companies_1\arctic-carving-430707-s6-52ee32effc40.json',
-        scope)
-
+        r'C:\Users\hp\PycharmProjects\Potential_riskiness_of_shell_companies_1\arctic-carving-430707-s6-52ee32effc40.json',
+        scope
+    )
     client = gspread.authorize(creds)
     sheet = client.open(sheet_name).sheet1  # Predpokladáme, že sa používa prvý hárok
     data = sheet.get_all_records()

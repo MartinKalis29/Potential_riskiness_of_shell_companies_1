@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Executive(models.Model):
     executive_name = models.CharField(max_length=255)
     executive_address = models.CharField(max_length=255)
@@ -8,6 +9,7 @@ class Executive(models.Model):
 
     def __str__(self):
         return self.executive_name
+
 
 class Company(models.Model):
     company_id = models.AutoField(primary_key=True)
@@ -25,12 +27,14 @@ class Company(models.Model):
     def __str__(self):
         return self.company_name
 
+
 class RegisteredOffice(models.Model):
     registered_office = models.CharField(max_length=255)
     registered_office_city = models.CharField(max_length=255)
 
     def __str__(self):
         return f"{self.registered_office}, {self.registered_office_city}"
+
 
 class Employee(models.Model):
     company_name = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='employees')
@@ -39,6 +43,7 @@ class Employee(models.Model):
     def __str__(self):
         return f"{self.employee_count} employees at {self.company_name}"
 
+
 class Revenue(models.Model):
     company_name = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='revenues')
     revenue_year = models.IntegerField(default=0)
@@ -46,6 +51,7 @@ class Revenue(models.Model):
 
     def __str__(self):
         return f"{self.YoY_increase_in_sales} in {self.revenue_year}"
+
 
 class CompanyDebt(models.Model):
     company_name = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='debts')
