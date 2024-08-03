@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Top 10 Highest Health Insurance Debts</h1>
+<ul>
+    {% for debt in top_10_health_insurance_debt %}
+    <li><a href="{% url 'company_detail' debt.company_name.company_id %}">{{ debt.company_name.company_name }}</a>: {{ debt.health_insurance_company_debt }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

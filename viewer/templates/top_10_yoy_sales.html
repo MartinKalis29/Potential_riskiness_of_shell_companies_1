@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Top 10 Highest Year-over-Year Sales</h1>
+<ul>
+    {% for revenue in top_10_yoy_sales %}
+    <li><a href="{% url 'company_detail' revenue.company_name.company_id %}">{{ revenue.company_name.company_name }}</a>: {{ revenue.YoY_increase_in_sales }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

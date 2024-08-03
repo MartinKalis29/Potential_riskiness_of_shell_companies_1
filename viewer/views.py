@@ -1,7 +1,7 @@
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404
 
-from viewer.models import Company
+from viewer.models import Company, Revenue, CompanyDebt
 
 from .google_sheets import get_google_sheets_data
 
@@ -64,7 +64,8 @@ def company_detail(request, company_id):
     if company.get('health_insurance_company_debt', 0) > 0:
         risk_score += 1
 
-    return render(request, 'company_detail.html', {'company': company, 'risk_score': risk_score})  # upravená cesta k šablóne
+    return render(request, 'company_detail.html',
+                  {'company': company, 'risk_score': risk_score})  # upravená cesta k šablóne
 
 
 def search(request):
@@ -74,3 +75,34 @@ def search(request):
         context = {'search_input': q, 'database': database_}
         return render(request, "search_results.html", context)
     return render(request, "home.html")
+
+
+def statistics_view(request):
+    return render(request, 'statistics.html')
+
+
+def top_10_yoy_sales_view(request):
+    top_10_yoy_sales = Revenue.objects.order_by('-YoY_increase_in_sales')[:10]
+    return render(request, 'top_10_yoy_sales.html', {'top_10_yoy_sales': top_10_yoy_sales})
+
+
+def top_10_tax_debt_view(request):
+    top_10_tax_debt = CompanyDebt.objects.order_by('-tax_office_debt')[:10]
+    return render(request, 'top_10_tax_debt.html', {'top_10_tax_debt': top_10_tax_debt})
+
+
+def top_10_social_insurance_debt_view(request):
+    top_10_social_insurance_debt = CompanyDebt.objects.order_by('-social_insurance_agency_debt')[:10]
+    return render(request, 'top_10_social_insurance_debt.html',
+                  {'top_10_social_insurance_debt': top_10_social_insurance_debt})
+
+
+def top_10_health_insurance_debt_view(request):
+    top_10_health_insurance_debt = CompanyDebt.objects.order_by('-health_insurance_company_debt')[:10]
+    return render(request, 'top_10_health_insurance_debt.html',
+                  {'top_10_health_insurance_debt': top_10_health_insurance_debt})
+
+
+def top_10_employee_count_view(request):
+    top_10_employee_count = Company.objects.order_by('-employee_count')[:10]
+    return render(request, 'top_10_employee_count.html', {'top_10_employee_count': top_10_employee_count})

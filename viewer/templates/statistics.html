@@ -2,5 +2,15 @@
 
 {% block content %}
 <h1>Statistics</h1>
-<p> 10 naj... </p>
+
+<h2><a href="{% url 'top_10_yoy_sales' %}">Top 10 Highest Year-over-Year Sales</a></h2>
+
+<h2><a href="{% url 'top_10_tax_debt' %}">Top 10 Highest Tax Office Debts</a></h2>
+
+<h2><a href="{% url 'top_10_social_insurance_debt' %}">Top 10 Highest Social Insurance Debts</a></h2>
+
+<h2><a href="{% url 'top_10_health_insurance_debt' %}">Top 10 Highest Health Insurance Debts</a></h2>
+
+<h2><a href="{% url 'top_10_employee_count' %}">Top 10 Highest Employee Counts</a></h2>
+
 {% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Top 10 Highest Employee Counts</h1>
+<ul>
+    {% for company in top_10_employee_count %}
+    <li><a href="{% url 'company_detail' company.company_id %}">{{ company.company_name }}</a>: {{ company.employee_count }} employees</li>
+    {% endfor %}
+</ul>
+{% endblock %}
