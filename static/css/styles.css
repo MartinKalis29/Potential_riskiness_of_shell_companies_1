@@ -27,7 +27,7 @@ main {
 
 /* Navigation bar */
 .navbar {
-    height: 100px;
+    height: 80px;
     display: flex;
     align-items: center;
     background-color: #343a40;
@@ -43,7 +43,7 @@ main {
 }
 
 .logo-nav {
-    height: 80px;
+    height: 60px;
     width: auto;
 }
 
@@ -54,7 +54,7 @@ main {
 }
 
 .nav-item {
-    margin-right: 15px;
+    margin-right: 20px;
 }
 
 .nav-link {
@@ -152,12 +152,109 @@ main {
 
 /* Footer */
 .footer {
+    background: #333; /* Čierne pozadie */
+    color: #fff; /* Biele písmo */
+    padding: 3px 1px; /* Padding pre footer */
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Container pre footer */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5px;
+}
+
+/* Hlavný obsah footera */
+.footer-content {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap; /* Umožní položkám zlomiť sa na novú čiaru pri menších obrazovkách */
+}
+
+/* Kontaktné informácie */
+.contact-info {
+    flex: 2;
+    display: flex;
+    align-items: center; /* Zarovnanie textu a odkazu na jednu úroveň */
+    justify-content: center;
+    gap: 1px;
+}
+
+/* Odkazy */
+.legal {
+    display: flex;
+    align-items: center;
+}
+
+.legal a {
+    color: #fff; /* Biele písmo pre odkazy */
+    text-decoration: none;
+    margin: 0 10px; /* Odstup medzi odkazmi */
+}
+
+.legal a:hover {
+    text-decoration: underline;
+}
+
+/* Formulár na odber noviniek */
+.newsletter-signup {
+    flex: 2;
+    display: flex;
+    align-items: center; /* Zarovnanie inputu a formulára do jednej výšky */
+    justify-content: center; /* Center formuláru v rámci priestoru */
+    gap: 10px; /* Medzera medzi inputom a formulárom */
+}
+
+.newsletter-signup p {
+    margin: 0; /* Odstránenie marginu pre p */
+}
+
+.newsletter-signup form {
+    display: flex;
+    align-items: center;
+    margin: 0; /* Odstránenie marginu pre form */
+}
+
+.newsletter-signup input[type="email"] {
+    padding: 5px; /* Menší padding pre zníženie výšky */
+    border: 1px solid #555;
+    border-radius: 4px;
+    width: 200px; /* Šírka poľa pre e-mail */
+    max-width: 100%;
+    background: #444; /* Trochu svetlejšie pozadie pre input */
+    color: #fff; /* Biele písmo v inpute */
+    box-sizing: border-box;
+}
+
+/* Spodná časť footeru */
+.footer-bottom {
     background: #333;
     color: #fff;
     text-align: center;
-    padding: 10px 0;
-    position: relative;
+    padding: 0px 0; /* Padding pre úzky footer */
+    margin-top: 0px; /* Priestor nad spodnou časťou footera */
 }
+
+/* Pre menšie obrazovky */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .contact-info, .legal, .newsletter-signup {
+        margin: 5px 0;
+    }
+
+    .newsletter-signup {
+        gap: 5px; /* Menšia medzera medzi inputom a formulárom */
+    }
+}
+
+
+
 
 /* Database page */
 .container {
@@ -425,4 +522,65 @@ main {
         color: #000;
         text-align: left;
     }
+}
+
+/* Štýly pre Privacy Policy stránku */
+/* Privacy Policy Page */
+.privacy-container {
+    max-width: 800px; /* Zabezpečí, že text nebude príliš široký */
+    margin: 0 auto; /* Centerovanie kontejnera */
+    padding: 20px; /* Padding okolo obsahu */
+}
+
+.privacy-container h1 {
+    font-size: 2em; /* Väčšie písmo pre nadpis */
+    margin-bottom: 20px; /* Priestor pod nadpisom */
+    text-align: center; /* Centerovanie nadpisu */
+    color: #333; /* Tmavo šedá farba pre lepšiu čitateľnosť */
+}
+
+.privacy-paragraph {
+    font-size: 1em; /* Veľkosť písma pre odstavce */
+    line-height: 1.6; /* Zlepšuje čitateľnosť textu */
+    margin-bottom: 20px; /* Priestor medzi odstavcami */
+    color: #555; /* Svetlo šedá farba textu */
+}
+
+.privacy-paragraph a {
+    color: #007bff; /* Farba pre odkazy */
+    text-decoration: none; /* Odstráni podčiarkovanie */
+}
+
+.privacy-paragraph a:hover {
+    text-decoration: underline; /* Podčiarkovanie pri hover */
+}
+
+/* Terms of Service Page */
+.terms-container {
+    max-width: 800px; /* Zabezpečí, že text nebude príliš široký */
+    margin: 0 auto; /* Centerovanie kontejnera */
+    padding: 20px; /* Padding okolo obsahu */
+}
+
+.terms-container h1 {
+    font-size: 2em; /* Väčšie písmo pre nadpis */
+    margin-bottom: 20px; /* Priestor pod nadpisom */
+    text-align: center; /* Centerovanie nadpisu */
+    color: #333; /* Tmavo šedá farba pre lepšiu čitateľnosť */
+}
+
+.terms-paragraph {
+    font-size: 1em; /* Veľkosť písma pre odstavce */
+    line-height: 1.6; /* Zlepšuje čitateľnosť textu */
+    margin-bottom: 20px; /* Priestor medzi odstavcami */
+    color: #555; /* Svetlo šedá farba textu */
+}
+
+.terms-paragraph a {
+    color: #007bff; /* Farba pre odkazy */
+    text-decoration: none; /* Odstráni podčiarkovanie */
+}
+
+.terms-paragraph a:hover {
+    text-decoration: underline; /* Podčiarkovanie pri hover */
 }

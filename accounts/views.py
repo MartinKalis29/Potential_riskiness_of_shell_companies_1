@@ -9,6 +9,8 @@ from accounts.models import Profile
 from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+
 
 # Definícia pohľadu pre domovskú stránku
 def home(request):
@@ -80,3 +82,16 @@ class SignUpView(CreateView):
     def form_invalid(self, form):
         messages.error(self.request, 'There was a problem with your registration.')
         return self.render_to_response(self.get_context_data(form=form))
+
+def subscribe(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        # Tu pridajte kód na spracovanie emailu (napr. uloženie do databázy)
+        return HttpResponse("Thank you for subscribing!")
+    return redirect('/')  # Alebo vráťte späť na hlavnú stránku
+
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
+
+def terms_of_service(request):
+    return render(request, 'terms_of_service.html')

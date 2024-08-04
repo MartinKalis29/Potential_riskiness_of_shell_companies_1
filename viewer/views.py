@@ -106,3 +106,4 @@ def top_10_health_insurance_debt_view(request):
 def top_10_employee_count_view(request):
     top_10_employee_count = Company.objects.order_by('-employee_count')[:10]
     return render(request, 'top_10_employee_count.html', {'top_10_employee_count': top_10_employee_count})
+
