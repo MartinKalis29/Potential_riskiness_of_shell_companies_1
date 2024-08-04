@@ -1,3 +1,4 @@
 /.venv/
 /db.sqlite3
 ./viewer/google_sheets.py
+/arctic-carving-430707-s6-52ee32effc40.json
