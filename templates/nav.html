@@ -1,46 +1,52 @@
+{% load static %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">SafeBusiness</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
+        <!-- Logo namiesto názvu -->
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'images/safe_business_logo1.png' %}" alt="SafeBusiness Logo" class="logo-nav">
+        </a>
+        <!-- Toggler pre mobilné zobrazenie -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" href="{% url 'database' %}">Database</a>
-                <a class="nav-item nav-link" href="{% url 'statistics' %}">Statistics</a>
-                <a class="nav-item nav-link" href="{% url 'about_us' %}">About us</a>
-            </div>
-
-            <form method="POST" action="{% url 'search' %}">
-                {% csrf_token %}
-                <input type="text" name="search" placeholder="Search for a company...">
-                <button type="submit">Search</button>
-            </form>
-
-            <div class="navbar-nav ml-auto">
-                <div class="nav-item dropdown">
+        <!-- Obsah navigačného panela -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'database' %}">Database</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'statistics' %}">Statistics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about_us' %}">About us</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
                     {% if user.is_authenticated %}
-                        <a class="nav-link active dropdown-toggle" href="#" data-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% if user.first_name %}Hello, {{ user.first_name }}!
                             {% else %}Hello, {{ user.username }}!{% endif %}
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item text-right" href="{% url 'logout' %}">Logout</a>
-                            <a class="dropdown-item text-right" href="{% url 'password_change' %}">Change password</a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                            <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
                         </div>
                     {% else %}
-                        <a class="nav-link active dropdown-toggle" href="#" data-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="guestDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             You are not logged in.
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item text-right" href="{% url 'login' %}">Login</a>
-                            <a class="dropdown-item text-right" href="{% url 'signup' %}">Sign-up</a>
-
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="guestDropdown">
+                            <a class="dropdown-item" href="{% url 'login' %}">Login</a>
+                            <a class="dropdown-item" href="{% url 'signup' %}">Sign-up</a>
                         </div>
                     {% endif %}
-                </div>
-            </div>
-
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

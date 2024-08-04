@@ -74,7 +74,7 @@ def search(request):
         database_ = Company.objects.filter(company_name__icontains=q)
         context = {'search_input': q, 'database': database_}
         return render(request, "search_results.html", context)
-    return render(request, "home.html")
+    return render(request, "base.html")
 
 
 def statistics_view(request):

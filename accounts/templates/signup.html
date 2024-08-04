@@ -1,10 +1,65 @@
 {% extends "base.html" %}
+{% block form_title %}Sign up{% endblock %}
 
 {% block content %}
-<h2>Sign up</h2>
-<form method="post">
-    {% csrf_token %}
-    <table>{{ form }}</table>
-    <input id="id-submit" type="submit" value="Submit" class="btn btn-primary">
-</form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="form-container">
+                <h2>Sign up</h2>
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="id_username" class="form-label">Username:</label>
+                        {{ form.username }}
+                        <small class="form-text text-muted">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password1" class="form-label">Password:</label>
+                        {{ form.password1 }}
+                        <small class="form-text text-muted">Your password can’t be too similar to your other personal information. Your password must contain at least 8 characters. Your password can’t be a commonly used password. Your password can’t be entirely numeric.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password2" class="form-label">Password confirmation:</label>
+                        {{ form.password2 }}
+                        <small class="form-text text-muted">Enter the same password as before, for verification.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_email" class="form-label">Email:</label>
+                        {{ form.email }}
+                        <small class="form-text text-muted">Please enter a valid email address.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_personal_number" class="form-label">Personal ID Number:</label>
+                        {{ form.personal_number }}
+                        <small class="form-text text-muted">Please enter your personal ID number.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_birth_date" class="form-label">Birth Date:</label>
+                        {{ form.birth_date }}
+                        <small class="form-text text-muted">Please enter your birth date in DD/MM/YYYY format.</small>
+                    </div>
+
+                    <input type="submit" value="Sign up" class="btn btn-primary">
+                </form>
+
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                        <li>{{ field }}: {{ errors }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

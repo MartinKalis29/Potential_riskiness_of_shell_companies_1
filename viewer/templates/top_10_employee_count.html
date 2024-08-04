@@ -1,10 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Top 10 Highest Employee Counts</h1>
-<ul>
-    {% for company in top_10_employee_count %}
-    <li><a href="{% url 'company_detail' company.company_id %}">{{ company.company_name }}</a>: {{ company.employee_count }} employees</li>
-    {% endfor %}
-</ul>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<div class="container">
+    <h1 class="my-4">Top 10 Highest Employee Counts</h1>
+    <div class="table-container">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Company Name</th>
+                    <th>Employee Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in top_10_employee_count %}
+                <tr>
+                    <td><a href="{% url 'company_detail' company.company_id %}">{{ company.company_name }}</a></td>
+                    <td>{{ company.employee_count }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">No data available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
