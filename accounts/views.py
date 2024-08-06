@@ -16,6 +16,7 @@ from django.http import HttpResponse
 def home(request):
     return render(request, 'home.html')
 
+
 # Definícia pohľadu pre štatistiky
 from django.shortcuts import render
 from .models import Company  # Predpokladajme, že máte model Company
@@ -61,12 +62,15 @@ class SignUpForm(UserCreationForm):
             )
         return user
 
+
 class SubmittableLoginView(LoginView):
     template_name = 'form.html'
+
 
 class SubmittablePasswordChangeView(PasswordChangeView):
     template_name = 'form.html'
     success_url = reverse_lazy('home')
+
 
 class SignUpView(CreateView):
     form_class = SignUpForm
@@ -83,6 +87,7 @@ class SignUpView(CreateView):
         messages.error(self.request, 'There was a problem with your registration.')
         return self.render_to_response(self.get_context_data(form=form))
 
+
 def subscribe(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -90,8 +95,5 @@ def subscribe(request):
         return HttpResponse("Thank you for subscribing!")
     return redirect('/')  # Alebo vráťte späť na hlavnú stránku
 
-def privacy_policy(request):
-    return render(request, 'privacy_policy.html')
 
-def terms_of_service(request):
-    return render(request, 'terms_of_service.html')
+

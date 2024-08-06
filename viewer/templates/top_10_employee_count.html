@@ -17,7 +17,7 @@
                 {% for company in top_10_employee_count %}
                 <tr>
                     <td><a href="{% url 'company_detail' company.company_id %}">{{ company.company_name }}</a></td>
-                    <td>{{ company.employee_count }}</td>
+                    <td>{{ company.total_employees }}</td>
                 </tr>
                 {% empty %}
                 <tr>

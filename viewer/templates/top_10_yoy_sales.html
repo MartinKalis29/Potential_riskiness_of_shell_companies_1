@@ -16,7 +16,7 @@
             <tbody>
                 {% for revenue in top_10_yoy_sales %}
                 <tr>
-                    <td><a href="{% url 'company_detail' revenue.company_name.company_id %}">{{ revenue.company_name.company_name }}</a></td>
+                    <td><a href="{% url 'company_detail' revenue.company.company_id %}">{{ revenue.company.company_name }}</a></td>
                     <td>{{ revenue.YoY_increase_in_sales }}</td>
                 </tr>
                 {% empty %}

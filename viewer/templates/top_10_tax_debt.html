@@ -16,7 +16,7 @@
             <tbody>
                 {% for debt in top_10_tax_debt %}
                 <tr>
-                    <td><a href="{% url 'company_detail' debt.company_name.company_id %}">{{ debt.company_name.company_name }}</a></td>
+                    <td><a href="{% url 'company_detail' debt.company.company_id %}">{{ debt.company.company_name }}</a></td>
                     <td>{{ debt.tax_office_debt }}</td>
                 </tr>
                 {% empty %}

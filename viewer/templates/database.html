@@ -11,7 +11,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Year of Foundation</th>
-                <th>Registered Office</th>
+                <th>Registered Office Address</th>
                 <th>Registered Office City</th>
                 <th>Executive Name</th>
                 <th>Employee Count</th>
@@ -27,7 +27,7 @@
                 <td>{{ company.company_id }}</td>
                 <td><a href="{% url 'company_detail' company.company_id %}">{{ company.company_name }}</a></td>
                 <td>{{ company.year_of_foundation }}</td>
-                <td>{{ company.registered_office }}</td>
+                <td>{{ company.registered_office_address }}</td>
                 <td>{{ company.registered_office_city }}</td>
                 <td>{{ company.executive_name }}</td>
                 <td>{{ company.employee_count }}</td>

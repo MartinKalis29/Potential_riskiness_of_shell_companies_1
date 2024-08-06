@@ -1,6 +1,6 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from viewer.models import Company, Executive, CompanyDebt, RegisteredOffice, Employee, Revenue
+from .models import Company, Executive, CompanyDebt, RegisteredOffice, Employee, Revenue
 
 
 def get_google_sheets_data(sheet_name):
@@ -12,7 +12,7 @@ def get_google_sheets_data(sheet_name):
     """
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name(
-        r'C:\Users\Jozef Repka\PycharmProjects\Potential_riskiness_of_shell_companies_1\arctic-carving-430707-s6-52ee32effc40.json',
+        r'C:\Users\hp\PycharmProjects\Potential_riskiness_of_shell_companies_1\arctic-carving-430707-s6-52ee32effc40.json',
         scope
     )
     client = gspread.authorize(creds)
@@ -36,7 +36,6 @@ def update_companies_from_sheet(sheet_name):
             defaults={
                 'executive_address': item.get('executive_address'),
                 'executive_city': item.get('executive_city'),
-                'executive_year_of_change': item.get('executive_year_of_change'),
             }
         )
 
@@ -46,30 +45,26 @@ def update_companies_from_sheet(sheet_name):
             defaults={
                 'company_name': item.get('company_name'),
                 'year_of_foundation': item.get('year_of_foundation'),
-                'registered_office': item.get('registered_office'),
-                'registered_office_city': item.get('registered_office_city'),
-                'executive': executive,  # Prepojenie s Executive
                 'executive_year_of_change': item.get('executive_year_of_change'),
                 'executive_change_count': item.get('executive_change_count'),
-                'employee_count': item.get('employee_count'),
-                'revenue_year': item.get('revenue_year'),
-                'YoY_increase_in_sales': item.get('YoY_increase_in_sales'),
             }
         )
+        company.executives.add(executive)
 
         # Update or create RegisteredOffice
-        registered_office, reg_created = RegisteredOffice.objects.update_or_create(
-            registered_office=item.get('registered_office'),
+        RegisteredOffice.objects.update_or_create(
+            registered_office_address=item.get('registered_office_address'),
             registered_office_city=item.get('registered_office_city'),
+            company=company,
             defaults={
-                'registered_office': item.get('registered_office'),
+                'registered_office_address': item.get('registered_office_address'),
                 'registered_office_city': item.get('registered_office_city'),
             }
         )
 
         # Update or create Employee
         Employee.objects.update_or_create(
-            company_name=company,
+            company=company,
             defaults={
                 'employee_count': item.get('employee_count', 0),
             }
@@ -77,16 +72,16 @@ def update_companies_from_sheet(sheet_name):
 
         # Update or create Revenue
         Revenue.objects.update_or_create(
-            company_name=company,
-            revenue_year=item.get('revenue_year'),
+            company=company,
             defaults={
+                'revenue_year': item.get('revenue_year', 0),
                 'YoY_increase_in_sales': item.get('YoY_increase_in_sales', 0),
             }
         )
 
         # Update or create CompanyDebt
         CompanyDebt.objects.update_or_create(
-            company_name=company,
+            company=company,
             defaults={
                 'tax_office_debt': item.get('tax_office_debt', 0),
                 'social_insurance_agency_debt': item.get('social_insurance_agency_debt', 0),
