@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block form_title %}Delete Company{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="form-container">
+                <h2>Delete Company</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <p>
+                        Are you sure you want to delete company "{{ object }}" from the database?
+                    </p>
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn btn-danger">
+                        <a href="{% url 'database' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

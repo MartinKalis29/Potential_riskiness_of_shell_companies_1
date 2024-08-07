@@ -17,12 +17,12 @@ class Company(models.Model):
     employee_count = models.IntegerField()
     YoY_increase_in_sales = models.IntegerField()
 
+
 class CompanyDebt(models.Model):
     company_name = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='debts')
     tax_office_debt = models.IntegerField(default=0)
     social_insurance_agency_debt = models.IntegerField(default=0)
     health_insurance_company_debt = models.IntegerField(default=0)
-
 
     def __str__(self):
         return self.company_name

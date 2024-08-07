@@ -1,11 +1,11 @@
 from concurrent.futures._base import LOGGER
 
 from django.db.models import AutoField, Sum
-from django.forms import Form, CharField, IntegerField, ModelChoiceField, ModelMultipleChoiceField
+from django.forms import Form, CharField, IntegerField, ModelChoiceField, ModelMultipleChoiceField, ModelForm
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, UpdateView, CreateView, DeleteView
 
 from viewer.models import Company, Revenue, CompanyDebt, Executive, RegisteredOffice, Employee
 
@@ -153,14 +153,34 @@ class ExecutiveFormView(FormView):
         return super().form_invalid(form)
 
 
-class CompanyForm(Form):
-    company_name = CharField(max_length=255)
-    year_of_foundation = IntegerField(required=False, min_value=1993, max_value=2024)
+# class CompanyForm(Form):
+#     company_name = CharField(max_length=255)
+#     year_of_foundation = IntegerField(required=False, min_value=1993, max_value=2024)
+#     registered_office_address = CharField(max_length=255)
+#     registered_office_city = CharField(max_length=255)
+#     executives = ModelMultipleChoiceField(queryset=Executive.objects.all())
+#     executive_year_of_change = IntegerField(required=False, min_value=1993, max_value=2024)
+#     executive_change_count = IntegerField(required=False, min_value=0)
+#     employee_count = IntegerField(required=False, min_value=0)
+#     revenue_year = IntegerField(required=False, min_value=2023, max_value=2023)
+#     YoY_increase_in_sales = IntegerField(required=False, min_value=0)
+#     tax_office_debt = IntegerField(required=False, min_value=0)
+#     social_insurance_agency_debt = IntegerField(required=False, min_value=0)
+#     health_insurance_company_debt = IntegerField(required=False, min_value=0)
+#
+#     def clean_company_name(self):
+#         initial_data = super().clean()
+#         initial = initial_data['company_name']
+#         return initial.strip()
+
+
+class CompanyModelForm(ModelForm):
+    class Meta:
+        model = Company
+        fields = '__all__'
+
     registered_office_address = CharField(max_length=255)
     registered_office_city = CharField(max_length=255)
-    executives = ModelMultipleChoiceField(queryset=Executive.objects.all())
-    executive_year_of_change = IntegerField(required=False, min_value=1993, max_value=2024)
-    executive_change_count = IntegerField(required=False, min_value=0)
     employee_count = IntegerField(required=False, min_value=0)
     revenue_year = IntegerField(required=False, min_value=2023, max_value=2023)
     YoY_increase_in_sales = IntegerField(required=False, min_value=0)
@@ -176,7 +196,7 @@ class CompanyForm(Form):
 
 class CompanyFormView(FormView):
     template_name = 'company_form.html'
-    form_class = CompanyForm
+    form_class = CompanyModelForm
     success_url = reverse_lazy('company_create')
 
     def form_valid(self, form):
@@ -227,3 +247,36 @@ class CompanyFormView(FormView):
     def form_invalid(self, form):
         LOGGER.warning('User provided invalid data.')
         return super().form_invalid(form)
+
+
+class CompanyCreateView(CreateView):
+    template_name = 'company_form.html'
+    form_class = CompanyModelForm
+    success_url = reverse_lazy('database')
+
+    def form_invalid(self, form):
+        LOGGER.warning('User provided invalid data.')
+        return super().form_invalid(form)
+
+
+class CompanyUpdateView(UpdateView):
+    template_name = 'company_form.html'
+    model = Company
+    form_class = CompanyModelForm
+    success_url = reverse_lazy('database')
+
+    # def get_initial(self):
+    #     initial = super().get_initial()
+    #     company = self.get_object()
+    #     # Ak je potrebné, môžete pridať akékoľvek ďalšie inicializačné kroky
+    #     return initial
+
+    def form_invalid(self, form):
+        LOGGER.warning('User provided invalid data.')
+        return super().form_invalid(form)
+
+
+class CompanyDeleteView(DeleteView):
+    template_name = 'company_confirm_delete.html'
+    model = Company
+    success_url = reverse_lazy('database')

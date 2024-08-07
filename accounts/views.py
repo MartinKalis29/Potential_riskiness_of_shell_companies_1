@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.db.transaction import atomic
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from accounts.models import Profile
@@ -20,18 +20,6 @@ def home(request):
 # Definícia pohľadu pre štatistiky
 from django.shortcuts import render
 from .models import Company  # Predpokladajme, že máte model Company
-
-
-def statistics_view(request):
-    # Získanie top 10 spoločností s najvyšším počtom zamestnancov
-    top_10_health_insurance_debt = Company.objects.all().order_by('-health_insurance_debt')[:10]
-    top_10_social_insurance_debt = Company.objects.all().order_by('-social_insurance_debt')[:10]
-    top_10_tax_debt = Company.objects.all().order_by('-tax_debt')[:10]
-    top_10_yoy_sales = Company.objects.all().order_by('-yoy_sales')[:10]
-    top_10_employee_count = Company.objects.all().order_by('-employee_count')[:10]
-
-    # Vrátiť šablónu s údajmi
-    return render(request, 'top_10_employee_count.html', {'top_10_employee_count': top_10_employee_count})
 
 
 class SignUpForm(UserCreationForm):
@@ -94,6 +82,3 @@ def subscribe(request):
         # Tu pridajte kód na spracovanie emailu (napr. uloženie do databázy)
         return HttpResponse("Thank you for subscribing!")
     return redirect('/')  # Alebo vráťte späť na hlavnú stránku
-
-
-
