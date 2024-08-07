@@ -1,5 +1,6 @@
 from concurrent.futures._base import LOGGER
 
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.db.models import AutoField, Sum
 from django.forms import Form, CharField, IntegerField, ModelChoiceField, ModelMultipleChoiceField, ModelForm
 from django.http import HttpResponse, Http404, JsonResponse
@@ -123,21 +124,37 @@ def terms_of_service(request):
     return render(request, 'terms_of_service.html')
 
 
-class ExecutiveForm(Form):
-    executive_name = CharField(max_length=255)
-    executive_address = CharField(max_length=255)
-    executive_city = CharField(max_length=255)
+# class ExecutiveForm(Form):
+#     executive_name = CharField(max_length=255)
+#     executive_address = CharField(max_length=255)
+#     executive_city = CharField(max_length=255)
+#
+#     def clean_executive_name(self):
+#         initial_data = super().clean()  # pôvodné dáta vo formulári od užívateľa
+#         initial = initial_data['executive_name']  # pôvodný názov od užívateľa
+#         return initial.strip()  # odstránime prázdne znaky na začiatku a konci textu
+
+class StaffRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
+
+
+class ExecutiveModelForm(ModelForm):
+    class Meta:
+        model = Executive
+        fields = '__all__'
 
     def clean_executive_name(self):
-        initial_data = super().clean()  # pôvodné dáta vo formulári od užívateľa
-        initial = initial_data['executive_name']  # pôvodný názov od užívateľa
-        return initial.strip()  # odstránime prázdne znaky na začiatku a konci textu
+        initial_data = super().clean()
+        initial = initial_data['executive_name']
+        return initial.strip()
 
 
-class ExecutiveFormView(FormView):
+class ExecutiveFormView(StaffRequiredMixin, PermissionRequiredMixin, FormView):
     template_name = 'executive_form.html'
-    form_class = ExecutiveForm
+    form_class = ExecutiveModelForm
     success_url = reverse_lazy('executive_create')  # Názov URL patternu, nie šablóny
+    permission_required = 'viewer.add_executive'
 
     def form_valid(self, form):
         cleaned_data = form.cleaned_data
@@ -147,6 +164,18 @@ class ExecutiveFormView(FormView):
             executive_city=cleaned_data['executive_city'],
         )
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        LOGGER.warning('User provided invalid data.')
+        return super().form_invalid(form)
+
+
+class ExecutiveCreateView(StaffRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Executive
+    template_name = 'executive_form.html'
+    form_class = ExecutiveModelForm
+    success_url = reverse_lazy('database')
+    permission_required = 'viewer.add_executive'
 
     def form_invalid(self, form):
         LOGGER.warning('User provided invalid data.')
@@ -179,6 +208,11 @@ class CompanyModelForm(ModelForm):
         model = Company
         fields = '__all__'
 
+    def clean_company_name(self):
+        initial_data = super().clean()
+        initial = initial_data['company_name']
+        return initial.strip()
+
     registered_office_address = CharField(max_length=255)
     registered_office_city = CharField(max_length=255)
     employee_count = IntegerField(required=False, min_value=0)
@@ -188,16 +222,12 @@ class CompanyModelForm(ModelForm):
     social_insurance_agency_debt = IntegerField(required=False, min_value=0)
     health_insurance_company_debt = IntegerField(required=False, min_value=0)
 
-    def clean_company_name(self):
-        initial_data = super().clean()
-        initial = initial_data['company_name']
-        return initial.strip()
 
-
-class CompanyFormView(FormView):
+class CompanyFormView(StaffRequiredMixin, PermissionRequiredMixin, FormView):
     template_name = 'company_form.html'
     form_class = CompanyModelForm
     success_url = reverse_lazy('company_create')
+    permission_required = 'viewer.add_company'
 
     def form_valid(self, form):
         cleaned_data = form.cleaned_data
@@ -249,34 +279,39 @@ class CompanyFormView(FormView):
         return super().form_invalid(form)
 
 
-class CompanyCreateView(CreateView):
+class CompanyCreateView(StaffRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Company
     template_name = 'company_form.html'
     form_class = CompanyModelForm
     success_url = reverse_lazy('database')
+    permission_required = 'viewer.add_company'
 
     def form_invalid(self, form):
         LOGGER.warning('User provided invalid data.')
         return super().form_invalid(form)
 
 
-class CompanyUpdateView(UpdateView):
+class CompanyUpdateView(StaffRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'company_form.html'
     model = Company
     form_class = CompanyModelForm
     success_url = reverse_lazy('database')
+    permission_required = 'viewer.change_company'
 
-    # def get_initial(self):
-    #     initial = super().get_initial()
-    #     company = self.get_object()
-    #     # Ak je potrebné, môžete pridať akékoľvek ďalšie inicializačné kroky
-    #     return initial
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Company, pk=pk)
 
     def form_invalid(self, form):
         LOGGER.warning('User provided invalid data.')
         return super().form_invalid(form)
 
 
-class CompanyDeleteView(DeleteView):
+class CompanyDeleteView(StaffRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'company_confirm_delete.html'
     model = Company
     success_url = reverse_lazy('database')
+    permission_required = 'viewer.delete_company'
+
+    def test_func(self):
+        return super().test_func() and self.request.user.is_superuser
