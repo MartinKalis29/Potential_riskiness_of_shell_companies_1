@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.db.transaction import atomic
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from accounts.models import Profile
@@ -12,14 +12,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 
 
-# Definícia pohľadu pre domovskú stránku
 def home(request):
     return render(request, 'home.html')
-
-
-# Definícia pohľadu pre štatistiky
-from django.shortcuts import render
-from .models import Company  # Predpokladajme, že máte model Company
 
 
 class SignUpForm(UserCreationForm):

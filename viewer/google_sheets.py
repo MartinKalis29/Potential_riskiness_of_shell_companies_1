@@ -16,7 +16,7 @@ def get_google_sheets_data(sheet_name):
         scope
     )
     client = gspread.authorize(creds)
-    sheet = client.open(sheet_name).sheet1  # Predpokladáme, že sa používa prvý hárok
+    sheet = client.open(sheet_name).sheet1
     data = sheet.get_all_records()
     return data
 
@@ -41,7 +41,7 @@ def update_companies_from_sheet(sheet_name):
 
         # Update or create Company
         company, comp_created = Company.objects.update_or_create(
-            company_id=item.get('company_id'),  # Používame company_id na zladenie existujúcich záznamov
+            company_id=item.get('company_id'),
             defaults={
                 'company_name': item.get('company_name'),
                 'year_of_foundation': item.get('year_of_foundation'),

@@ -1,9 +1,9 @@
 from concurrent.futures._base import LOGGER
 
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
-from django.db.models import AutoField, Sum
-from django.forms import Form, CharField, IntegerField, ModelChoiceField, ModelMultipleChoiceField, ModelForm
-from django.http import HttpResponse, Http404, JsonResponse
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from django.db.models import Sum
+from django.forms import CharField, IntegerField, ModelForm
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import FormView, UpdateView, CreateView, DeleteView
@@ -15,15 +15,13 @@ from .google_sheets import get_google_sheets_data
 
 # Create your views here.
 def companies(request):
-    # Zadá sa názov alebo URL Google Sheets
     sheet_name = "Database_companies"
     data = get_google_sheets_data(sheet_name)
 
-    # Spracovanie dát a ich odoslanie do šablóny alebo ako odpoveď
     context = {
         'companies': data
     }
-    return render(request, 'database.html', context)  # upravená cesta k šablóne
+    return render(request, 'database.html', context)
 
 
 def home(request):
@@ -42,7 +40,6 @@ def company_detail(request, company_id):
     sheet_name = "Database_companies"
     data = get_google_sheets_data(sheet_name)
 
-    # Vyhľadanie konkrétnej firmy
     try:
         company_id = int(company_id)
     except ValueError:
@@ -52,7 +49,6 @@ def company_detail(request, company_id):
     if not company:
         raise Http404("Company does not exist")
 
-    # Výpočet rizikového skóre
     risk_score = 0
     risky_addresses = ["Račianska 88 B", "Tallerova 4", "Zámocká 3", "Košická 52/A"]
 
@@ -124,16 +120,6 @@ def terms_of_service(request):
     return render(request, 'terms_of_service.html')
 
 
-# class ExecutiveForm(Form):
-#     executive_name = CharField(max_length=255)
-#     executive_address = CharField(max_length=255)
-#     executive_city = CharField(max_length=255)
-#
-#     def clean_executive_name(self):
-#         initial_data = super().clean()  # pôvodné dáta vo formulári od užívateľa
-#         initial = initial_data['executive_name']  # pôvodný názov od užívateľa
-#         return initial.strip()  # odstránime prázdne znaky na začiatku a konci textu
-
 class StaffRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff
@@ -182,27 +168,6 @@ class ExecutiveCreateView(StaffRequiredMixin, PermissionRequiredMixin, CreateVie
         return super().form_invalid(form)
 
 
-# class CompanyForm(Form):
-#     company_name = CharField(max_length=255)
-#     year_of_foundation = IntegerField(required=False, min_value=1993, max_value=2024)
-#     registered_office_address = CharField(max_length=255)
-#     registered_office_city = CharField(max_length=255)
-#     executives = ModelMultipleChoiceField(queryset=Executive.objects.all())
-#     executive_year_of_change = IntegerField(required=False, min_value=1993, max_value=2024)
-#     executive_change_count = IntegerField(required=False, min_value=0)
-#     employee_count = IntegerField(required=False, min_value=0)
-#     revenue_year = IntegerField(required=False, min_value=2023, max_value=2023)
-#     YoY_increase_in_sales = IntegerField(required=False, min_value=0)
-#     tax_office_debt = IntegerField(required=False, min_value=0)
-#     social_insurance_agency_debt = IntegerField(required=False, min_value=0)
-#     health_insurance_company_debt = IntegerField(required=False, min_value=0)
-#
-#     def clean_company_name(self):
-#         initial_data = super().clean()
-#         initial = initial_data['company_name']
-#         return initial.strip()
-
-
 class CompanyModelForm(ModelForm):
     class Meta:
         model = Company
@@ -238,24 +203,20 @@ class CompanyFormView(StaffRequiredMixin, PermissionRequiredMixin, FormView):
             executive_change_count=cleaned_data.get('executive_change_count')
         )
 
-        # Priradenie ManyToManyField
         company.executives.set(cleaned_data['executives'])
 
-        # Vytvorenie RegisteredOffice
         RegisteredOffice.objects.create(
             company=company,
             registered_office_address=cleaned_data['registered_office_address'],
             registered_office_city=cleaned_data['registered_office_city']
         )
 
-        # Vytvorenie Employee
         if 'employee_count' in cleaned_data:
             Employee.objects.create(
                 company=company,
                 employee_count=cleaned_data['employee_count']
             )
 
-        # Vytvorenie Revenue
         if 'revenue_year' in cleaned_data and 'YoY_increase_in_sales' in cleaned_data:
             Revenue.objects.create(
                 company=company,
@@ -263,7 +224,6 @@ class CompanyFormView(StaffRequiredMixin, PermissionRequiredMixin, FormView):
                 YoY_increase_in_sales=cleaned_data['YoY_increase_in_sales']
             )
 
-        # Vytvorenie CompanyDebt
         if 'tax_office_debt' in cleaned_data and 'social_insurance_agency_debt' in cleaned_data and 'health_insurance_company_debt' in cleaned_data:
             CompanyDebt.objects.create(
                 company=company,

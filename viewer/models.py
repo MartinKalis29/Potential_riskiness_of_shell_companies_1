@@ -4,7 +4,7 @@ from django.db import models
 class Executive(models.Model):
     executive_name = models.CharField(max_length=255, blank=False)
     executive_address = models.CharField(max_length=255, blank=False)
-    executive_city = models.CharField(max_length=255, default='Unknown City', blank=False)
+    executive_city = models.CharField(max_length=255, blank=False)
 
     def __str__(self):
         return self.executive_name
@@ -52,7 +52,7 @@ class CompanyDebt(models.Model):
     tax_office_debt = models.IntegerField(blank=False)
     social_insurance_agency_debt = models.IntegerField(blank=False)
     health_insurance_company_debt = models.IntegerField(blank=False)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='company_debt', to_field='company_id')
+    company = models.OneToOneField(Company, on_delete=models.CASCADE, related_name='company_debts', to_field='company_id')
 
     def __str__(self):
         return f"Debt for {self.company}"

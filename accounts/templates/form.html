@@ -7,7 +7,6 @@
                 <h2>{{ form_title }}</h2>
                 <form method="post">
                     {% csrf_token %}
-                    <!-- Genericky formulár -->
                     {% for field in form %}
                     <div class="form-group">
                         <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
