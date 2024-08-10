@@ -56,7 +56,8 @@ def company_detail(request, company_id):
         risk_score += 1
     if company.get('executive_change_count', 0) > 1:
         risk_score += 1
-    if company.get('employee_count', 0) == 0 or company.get('employee_count', 0) == 1:
+    # if company.get('employee_count', 0) == 0 or company.get('employee_count', 0) == 1:
+    if company.get('employee_count', 0) == 0 or 1:
         risk_score += 1
     if company.get('YoY_increase_in_sales', 0) > 99999:
         risk_score += 1
@@ -169,6 +170,15 @@ class ExecutiveCreateView(StaffRequiredMixin, PermissionRequiredMixin, CreateVie
 
 
 class CompanyModelForm(ModelForm):
+    registered_office_address = CharField(max_length=255, required=True)
+    registered_office_city = CharField(max_length=255, required=True)
+    employee_count = IntegerField(required=False, min_value=0)
+    revenue_year = IntegerField(required=False, min_value=2023, max_value=2023)
+    YoY_increase_in_sales = IntegerField(required=False, min_value=0)
+    tax_office_debt = IntegerField(required=False, min_value=0)
+    social_insurance_agency_debt = IntegerField(required=False, min_value=0)
+    health_insurance_company_debt = IntegerField(required=False, min_value=0)
+
     class Meta:
         model = Company
         fields = '__all__'
@@ -178,14 +188,78 @@ class CompanyModelForm(ModelForm):
         initial = initial_data['company_name']
         return initial.strip()
 
-    registered_office_address = CharField(max_length=255)
-    registered_office_city = CharField(max_length=255)
-    employee_count = IntegerField(required=False, min_value=0)
-    revenue_year = IntegerField(required=False, min_value=2023, max_value=2023)
-    YoY_increase_in_sales = IntegerField(required=False, min_value=0)
-    tax_office_debt = IntegerField(required=False, min_value=0)
-    social_insurance_agency_debt = IntegerField(required=False, min_value=0)
-    health_insurance_company_debt = IntegerField(required=False, min_value=0)
+    def __init__(self, *args, **kwargs):
+        company = kwargs.get('instance')
+        super().__init__(*args, **kwargs)
+
+        if company:
+            try:
+                registered_office = RegisteredOffice.objects.get(company=company)
+                self.fields['registered_office_address'].initial = registered_office.registered_office_address
+                self.fields['registered_office_city'].initial = registered_office.registered_office_city
+            except RegisteredOffice.DoesNotExist:
+                pass
+
+            try:
+                employee = Employee.objects.get(company=company)
+                self.fields['employee_count'].initial = employee.employee_count
+            except Employee.DoesNotExist:
+                pass
+
+            try:
+                revenue = Revenue.objects.get(company=company)
+                self.fields['revenue_year'].initial = revenue.revenue_year
+                self.fields['YoY_increase_in_sales'].initial = revenue.YoY_increase_in_sales
+            except Revenue.DoesNotExist:
+                pass
+
+            try:
+                company_debt = CompanyDebt.objects.get(company=company)
+                self.fields['tax_office_debt'].initial = company_debt.tax_office_debt
+                self.fields['social_insurance_agency_debt'].initial = company_debt.social_insurance_agency_debt
+                self.fields['health_insurance_company_debt'].initial = company_debt.health_insurance_company_debt
+            except CompanyDebt.DoesNotExist:
+                pass
+
+    def save(self, commit=True):
+        company = super().save(commit=False)
+
+        if commit:
+            company.save()
+
+            RegisteredOffice.objects.update_or_create(
+                company=company,
+                defaults={
+                    'registered_office_address': self.cleaned_data['registered_office_address'],
+                    'registered_office_city': self.cleaned_data['registered_office_city'],
+                }
+            )
+
+            Employee.objects.update_or_create(
+                company=company,
+                defaults={
+                    'employee_count': self.cleaned_data['employee_count'],
+                }
+            )
+
+            Revenue.objects.update_or_create(
+                company=company,
+                defaults={
+                    'revenue_year': self.cleaned_data['revenue_year'],
+                    'YoY_increase_in_sales': self.cleaned_data['YoY_increase_in_sales'],
+                }
+            )
+
+            CompanyDebt.objects.update_or_create(
+                company=company,
+                defaults={
+                    'tax_office_debt': self.cleaned_data['tax_office_debt'],
+                    'social_insurance_agency_debt': self.cleaned_data['social_insurance_agency_debt'],
+                    'health_insurance_company_debt': self.cleaned_data['health_insurance_company_debt'],
+                }
+            )
+
+        return company
 
 
 class CompanyFormView(StaffRequiredMixin, PermissionRequiredMixin, FormView):
